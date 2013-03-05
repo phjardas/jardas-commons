@@ -1,4 +1,4 @@
-package de.jardas.commons;
+package de.jardas.commons.persistence;
 
 import java.util.UUID;
 

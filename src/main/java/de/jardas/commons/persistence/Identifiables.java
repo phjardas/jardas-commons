@@ -1,4 +1,4 @@
-package de.jardas.commons;
+package de.jardas.commons.persistence;
 
 import java.io.Serializable;
 import java.util.Arrays;

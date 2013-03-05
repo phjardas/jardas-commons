@@ -2,9 +2,6 @@ package de.jardas.commons.security;
 
 import java.util.Random;
 
-import org.springframework.stereotype.Service;
-
-@Service
 public class RandomPasswordGenerator implements PasswordGenerator {
 	private static final char[] ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 			.toCharArray();

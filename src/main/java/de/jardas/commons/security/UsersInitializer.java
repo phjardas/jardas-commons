@@ -3,17 +3,20 @@ package de.jardas.commons.security;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.provisioning.UserDetailsManager;
 
+import de.jardas.commons.Preconditions;
 import de.jardas.commons.init.Initializer;
 
 @Profile("testdata")
 public class UsersInitializer implements Initializer {
 	private final List<UserSpec> users = new LinkedList<UserSpec>();
-	@Autowired
-	private UserDetailsManager userDetailsManager;
+	private final UserDetailsManager userDetailsManager;
+
+	public UsersInitializer(final UserDetailsManager userDetailsManager) {
+		this.userDetailsManager = Preconditions.notNull(userDetailsManager, "userDetailsManager");
+	}
 
 	@Override
 	public void initialize() {

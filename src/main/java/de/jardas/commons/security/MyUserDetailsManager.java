@@ -1,6 +1,5 @@
 package de.jardas.commons.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.encoding.PasswordEncoder;
@@ -12,13 +11,19 @@ import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import de.jardas.commons.Preconditions;
+
 public class MyUserDetailsManager implements UserDetailsManager, PasswordChanger {
-	@Autowired
-	private UserDao userDao;
-	@Autowired
-	private SaltGenerator saltGenerator;
-	@Autowired
-	private PasswordEncoder passwordEncoder;
+	private final UserDao userDao;
+	private final SaltGenerator saltGenerator;
+	private final PasswordEncoder passwordEncoder;
+
+	public MyUserDetailsManager(final UserDao userDao, final SaltGenerator saltGenerator,
+			final PasswordEncoder passwordEncoder) {
+		this.userDao = Preconditions.notNull(userDao, "userDao");
+		this.saltGenerator = Preconditions.notNull(saltGenerator, "saltGenerator");
+		this.passwordEncoder = Preconditions.notNull(passwordEncoder, "passwordEncoder");
+	}
 
 	@Override
 	@Transactional(readOnly = true)

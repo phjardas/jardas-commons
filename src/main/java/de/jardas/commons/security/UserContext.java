@@ -1,18 +1,20 @@
 package de.jardas.commons.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 
-@Component
+import de.jardas.commons.Preconditions;
+
 public class UserContext {
-	@Autowired
-	private UserDao userDao;
+	private final UserDao userDao;
+
+	public UserContext(final UserDao userDao) {
+		this.userDao = Preconditions.notNull(userDao, "userDao");
+	}
 
 	public PersistentUser getUser() {
 		return userDao.findById(getUserId());

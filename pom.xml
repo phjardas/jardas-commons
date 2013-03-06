@@ -170,7 +170,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-tx</artifactId>
-			<version>3.2.0.RELEASE</version>
+			<version>${spring.version}</version>
 			<optional>true</optional>
 		</dependency>
 

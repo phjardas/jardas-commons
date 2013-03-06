@@ -11,13 +11,16 @@ import org.springframework.stereotype.Component;
 
 import com.google.common.collect.Ordering;
 
+import de.jardas.commons.spring.OrderedComparator;
+
 @Component
 public class Initialization implements ApplicationListener<ContextRefreshedEvent> {
 	@Autowired(required = false)
 	private final List<Initializer> initializers = new LinkedList<Initializer>();
 
 	private void initialize() {
-		final List<Initializer> orderedInitializers = Ordering.from(new OrderedComparator()).sortedCopy(initializers);
+		final List<Initializer> orderedInitializers = Ordering.from(OrderedComparator.getIntance()).sortedCopy(
+				initializers);
 
 		for (final Initializer initializer : orderedInitializers) {
 			initializer.initialize();

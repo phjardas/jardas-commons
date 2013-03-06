@@ -18,6 +18,13 @@ public class MyUserDetailsManager implements UserDetailsManager, PasswordChanger
 	private final SaltGenerator saltGenerator;
 	private final PasswordEncoder passwordEncoder;
 
+	@Deprecated
+	protected MyUserDetailsManager() {
+		userDao = null;
+		saltGenerator = null;
+		passwordEncoder = null;
+	}
+
 	public MyUserDetailsManager(final UserDao userDao, final SaltGenerator saltGenerator,
 			final PasswordEncoder passwordEncoder) {
 		this.userDao = Preconditions.notNull(userDao, "userDao");

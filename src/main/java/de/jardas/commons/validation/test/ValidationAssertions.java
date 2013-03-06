@@ -1,7 +1,6 @@
 package de.jardas.commons.validation.test;
 
 import static java.lang.String.format;
-import static org.junit.Assert.fail;
 
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -117,6 +116,6 @@ public class ValidationAssertions {
 			}
 		}
 
-		fail(str.toString());
+		throw new AssertionError(str.toString());
 	}
 }

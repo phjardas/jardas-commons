@@ -1,5 +1,7 @@
 package de.jardas.commons.web.bind;
 
+import static java.lang.String.format;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -10,6 +12,7 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.converter.ConverterFactory;
 
 import de.jardas.commons.persistence.Identifiable;
+import de.jardas.commons.web.NotFoundException;
 
 public class IdentifiableParserFactory implements ConverterFactory<String, Identifiable<?>> {
 	private static final Logger LOG = LoggerFactory.getLogger(IdentifiableParserFactory.class);
@@ -47,7 +50,8 @@ public class IdentifiableParserFactory implements ConverterFactory<String, Ident
 			final T entity = entityManager.find(entityType, source);
 
 			if (entity == null) {
-				LOG.info("Could not resolve entity of type {} with ID {}", entityType.getName(), source);
+				throw new NotFoundException(format("Could not find entity of type %s with ID %s", entityType.getName(),
+						source));
 			}
 
 			return entity;

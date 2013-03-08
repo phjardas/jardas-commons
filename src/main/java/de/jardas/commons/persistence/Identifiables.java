@@ -43,11 +43,11 @@ public final class Identifiables {
 	}
 
 	/**
-	 * F�hrt eine Identit�tsbetrachtung von zwei Entit�ten anhand ihrer ID durch. Die zwei Objekte werden dann als
+	 * Führt eine Identitätsbetrachtung von zwei Entitäten anhand ihrer ID durch. Die zwei Objekte werden dann als
 	 * gleich betrachtet, wenn sie vom gleichen Typ sind und die gleiche ID haben.
 	 */
-	public static <I extends Serializable> boolean equal(final Identifiable<I> me,
-			final Class<? extends Identifiable<I>> type, final Object obj) {
+	public static <I extends Serializable, E extends Identifiable<I>> boolean equal(final E me,
+			final Class<? super E> type, final Object obj) {
 		if (obj == me) {
 			return true;
 		}
@@ -63,8 +63,8 @@ public final class Identifiables {
 	}
 
 	/**
-	 * Ermittelt den Hashcode einer Entit�t anhand ihrer ID. Der Hash-Code von zwei Entit�ten mit der gleichen ID ist
-	 * identisch, unabh�ngig aller anderer Attribute.
+	 * Ermittelt den Hashcode einer Entität anhand ihrer ID. Der Hash-Code von zwei Entitäten mit der gleichen ID ist
+	 * identisch, unabhängig aller anderer Attribute.
 	 */
 	public static <I extends Serializable> int hashCode(final Identifiable<I> obj) {
 		final I id = obj.getId();
@@ -73,7 +73,7 @@ public final class Identifiables {
 	}
 
 	/**
-	 * Erzeugt einen {@link ToStringHelper}, in dem die ID der Entit�t bereits enthalten ist.
+	 * Erzeugt einen {@link ToStringHelper}, in dem die ID der Entität bereits enthalten ist.
 	 */
 	public static <I extends Serializable> ToStringHelper toStringHelper(final Identifiable<I> obj) {
 		final String name = obj.getClass().getSimpleName() + "#" + obj.getId();

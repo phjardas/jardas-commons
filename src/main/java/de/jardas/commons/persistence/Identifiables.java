@@ -3,11 +3,13 @@ package de.jardas.commons.persistence;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import com.google.common.base.Function;
 import com.google.common.base.Objects;
 import com.google.common.base.Objects.ToStringHelper;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
 
 public final class Identifiables {
 	private Identifiables() {
@@ -26,6 +28,11 @@ public final class Identifiables {
 	public static <I extends Serializable> Collection<I> ids(final Collection<? extends Identifiable<I>> entities) {
 		final Function<Identifiable<I>, I> idFunction = toIdFunction();
 		return Collections2.transform(entities, idFunction);
+	}
+
+	public static <I extends Serializable> List<I> ids(final List<? extends Identifiable<I>> entities) {
+		final Function<Identifiable<I>, I> idFunction = toIdFunction();
+		return Lists.transform(entities, idFunction);
 	}
 
 	@SafeVarargs

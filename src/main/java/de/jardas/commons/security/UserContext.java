@@ -28,11 +28,11 @@ public class UserContext {
 		return SecurityContextHolder.getContext().getAuthentication();
 	}
 
-	public boolean hasRole(final Role role) {
+	public static boolean hasRole(final Role role) {
 		return hasRole(getAuthentication(), role);
 	}
 
-	public boolean hasRole(final Authentication authentication, final Role role) {
+	public static boolean hasRole(final Authentication authentication, final Role role) {
 		if (authentication == null) {
 			return false;
 		}

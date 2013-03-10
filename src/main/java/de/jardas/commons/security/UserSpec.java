@@ -71,6 +71,11 @@ public class UserSpec {
 	}
 
 	public void setRoles(final Role[] roles) {
-		this.roles = roles;
+		if (roles != null) {
+			this.roles = new Role[roles.length];
+			System.arraycopy(roles, 0, this.roles, 0, roles.length);
+		} else {
+			this.roles = new Role[0];
+		}
 	}
 }

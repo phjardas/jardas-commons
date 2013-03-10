@@ -7,13 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.stereotype.Component;
 
 import com.google.common.collect.Ordering;
 
 import de.jardas.commons.spring.OrderedComparator;
 
-@Component
 public class Initialization implements ApplicationListener<ContextRefreshedEvent> {
 	@Autowired(required = false)
 	private final List<Initializer> initializers = new LinkedList<Initializer>();

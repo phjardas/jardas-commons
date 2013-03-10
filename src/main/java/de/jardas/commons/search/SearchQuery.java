@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonProperty;
+
 import com.google.common.base.Objects;
 import com.google.common.base.Objects.ToStringHelper;
 
@@ -98,7 +101,8 @@ public abstract class SearchQuery<E> implements Serializable {
 		private final String column;
 		private final Direction direction;
 
-		public Order(final String column, final Direction direction) {
+		@JsonCreator
+		public Order(@JsonProperty("column") final String column, @JsonProperty("direction") final Direction direction) {
 			this.column = column;
 			this.direction = direction;
 		}

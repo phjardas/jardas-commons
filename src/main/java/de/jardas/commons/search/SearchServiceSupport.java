@@ -18,10 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import de.jardas.commons.search.SearchQuery;
 import de.jardas.commons.search.SearchQuery.Order.Direction;
-import de.jardas.commons.search.SearchResult;
-import de.jardas.commons.search.SearchService;
 
 @Repository
 public abstract class SearchServiceSupport<E, Q extends SearchQuery<E>> implements SearchService<E, Q> {
@@ -63,15 +60,22 @@ public abstract class SearchServiceSupport<E, Q extends SearchQuery<E>> implemen
 		final List<Order> orderBy = new LinkedList<Order>();
 
 		for (final SearchQuery.Order order : search.getOrders()) {
-			final Path<Object> sortPath = getOrderPath(crit, root, order.getColumn());
+			final Path<?> sortPath = getOrderPath(crit, root, order.getColumn());
 			orderBy.add(order.getDirection() == Direction.asc ? cb.asc(sortPath) : cb.desc(sortPath));
 		}
 
 		crit.orderBy(orderBy);
 	}
 
-	protected Path<Object> getOrderPath(final CriteriaQuery<?> crit, final Root<E> root, final String column) {
-		return root.get(column);
+	protected Path<?> getOrderPath(final CriteriaQuery<?> crit, final Root<E> root, final String column) {
+		Path<?> node = root;
+		final String[] path = column.split("\\.");
+
+		for (final String property : path) {
+			node = node.get(property);
+		}
+
+		return node;
 	}
 
 	private int getTotalResultsCount(final Q search) {

@@ -19,6 +19,7 @@ import org.joda.time.ReadableInstant;
 import de.jardas.commons.Preconditions;
 import de.jardas.commons.i18n.Internationalizable;
 import de.jardas.commons.i18n.InternationalizationService;
+import de.jardas.commons.i18n.Labeled;
 
 public class ExcelBuilder {
 	private final WritableWorkbook workbook;
@@ -76,6 +77,10 @@ public class ExcelBuilder {
 
 	public void label(final Number value) throws WriteException {
 		sheet.addCell(new jxl.write.Number(col++, row, value.doubleValue(), integerFormat));
+	}
+
+	public void label(final Labeled item) throws WriteException {
+		label(item != null ? item.getLabel() : "");
 	}
 
 	public void label(final Internationalizable item) throws WriteException {

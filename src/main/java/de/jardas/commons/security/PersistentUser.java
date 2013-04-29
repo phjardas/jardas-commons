@@ -9,8 +9,6 @@ import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -45,14 +43,8 @@ public class PersistentUser implements Serializable, Identifiable<String> {
 	private String name;
 
 	@NotNull
-	@Length(min = 64, max = 64)
-	@Column(nullable = false, columnDefinition = "char(64)")
+	@Column(nullable = false)
 	private String password;
-
-	@NotNull
-	@Length(min = 64, max = 64)
-	@Column(nullable = false, columnDefinition = "char(64)")
-	private String salt;
 
 	@Column(nullable = false, updatable = false)
 	@Type(type = "org.jadira.usertype.dateandtime.joda.PersistentDateTime")
@@ -66,9 +58,8 @@ public class PersistentUser implements Serializable, Identifiable<String> {
 
 	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"))
-	@Enumerated(EnumType.STRING)
 	@Column(name = "role")
-	private final Set<Role> roles = new HashSet<Role>();
+	private final Set<String> roles = new HashSet<String>();
 
 	@SuppressWarnings("unused")
 	private PersistentUser() {
@@ -90,14 +81,6 @@ public class PersistentUser implements Serializable, Identifiable<String> {
 
 	public void setPassword(final String password) {
 		this.password = password;
-	}
-
-	public String getSalt() {
-		return salt;
-	}
-
-	public void setSalt(final String salt) {
-		this.salt = salt;
 	}
 
 	public ReadableInstant getCreatedAt() {
@@ -136,11 +119,11 @@ public class PersistentUser implements Serializable, Identifiable<String> {
 		this.name = name;
 	}
 
-	public Set<Role> getRoles() {
+	public Set<String> getRoles() {
 		return roles;
 	}
 
-	public void setRoles(final Collection<Role> roles) {
+	public void setRoles(final Collection<String> roles) {
 		this.roles.clear();
 		this.roles.addAll(roles);
 	}

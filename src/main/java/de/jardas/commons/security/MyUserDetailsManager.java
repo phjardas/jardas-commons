@@ -2,11 +2,11 @@ package de.jardas.commons.security;
 
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.authentication.encoding.PasswordEncoder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,20 +15,16 @@ import de.jardas.commons.Preconditions;
 
 public class MyUserDetailsManager implements UserDetailsManager, PasswordChanger {
 	private final UserDao userDao;
-	private final SaltGenerator saltGenerator;
 	private final PasswordEncoder passwordEncoder;
 
 	@Deprecated
 	protected MyUserDetailsManager() {
 		userDao = null;
-		saltGenerator = null;
 		passwordEncoder = null;
 	}
 
-	public MyUserDetailsManager(final UserDao userDao, final SaltGenerator saltGenerator,
-			final PasswordEncoder passwordEncoder) {
+	public MyUserDetailsManager(final UserDao userDao, final PasswordEncoder passwordEncoder) {
 		this.userDao = Preconditions.notNull(userDao, "userDao");
-		this.saltGenerator = Preconditions.notNull(saltGenerator, "saltGenerator");
 		this.passwordEncoder = Preconditions.notNull(passwordEncoder, "passwordEncoder");
 	}
 
@@ -41,8 +37,8 @@ public class MyUserDetailsManager implements UserDetailsManager, PasswordChanger
 			throw new UsernameNotFoundException("User '" + username + "' not found");
 		}
 
-		return new SecurityUser(pu.getId(), pu.getEmail(), pu.getName(), pu.getPassword(), pu.getSalt(),
-				pu.isEnabled(), true, true, !pu.isLocked(), SecurityUtils.toAuthorities(pu.getRoles()));
+		return new SecurityUser(pu.getId(), pu.getEmail(), pu.getName(), pu.getPassword(), pu.isEnabled(), true, true,
+				!pu.isLocked(), SecurityUtils.toAuthorities(pu.getRoles()));
 	}
 
 	@Override
@@ -123,8 +119,6 @@ public class MyUserDetailsManager implements UserDetailsManager, PasswordChanger
 
 	@Override
 	public void setPassword(final PersistentUser user, final String password) {
-		final String salt = saltGenerator.generateSalt();
-		user.setSalt(salt);
-		user.setPassword(passwordEncoder.encodePassword(password, salt));
+		user.setPassword(passwordEncoder.encode(password));
 	}
 }

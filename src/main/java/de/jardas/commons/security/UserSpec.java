@@ -20,17 +20,17 @@ public class UserSpec {
 	private String password;
 
 	@NotEmpty
-	private Role[] roles;
+	private String[] roles;
 
 	public UserSpec() {
 		id = 0;
 	}
 
-	public UserSpec(final String email, final String name, final String password, final Role... roles) {
+	public UserSpec(final String email, final String name, final String password, final String... roles) {
 		this(0, email, name, password, roles);
 	}
 
-	public UserSpec(final long id, final String email, final String name, final String password, final Role... roles) {
+	public UserSpec(final long id, final String email, final String name, final String password, final String... roles) {
 		this.id = id;
 		this.email = email;
 		this.name = name;
@@ -66,16 +66,16 @@ public class UserSpec {
 		this.password = password;
 	}
 
-	public Role[] getRoles() {
+	public String[] getRoles() {
 		return roles;
 	}
 
-	public void setRoles(final Role[] roles) {
+	public void setRoles(final String[] roles) {
 		if (roles != null) {
-			this.roles = new Role[roles.length];
+			this.roles = new String[roles.length];
 			System.arraycopy(roles, 0, this.roles, 0, roles.length);
 		} else {
-			this.roles = new Role[0];
+			this.roles = new String[0];
 		}
 	}
 }

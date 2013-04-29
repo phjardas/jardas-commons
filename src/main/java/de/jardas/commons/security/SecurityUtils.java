@@ -36,29 +36,29 @@ public final class SecurityUtils {
 		return (PersistentUser) auth.getPrincipal();
 	}
 
-	public static Collection<? extends GrantedAuthority> toAuthorities(final Role... roles) {
+	public static Collection<? extends GrantedAuthority> toAuthorities(final String... roles) {
 		return toAuthorities(Arrays.asList(roles));
 	}
 
-	public static Collection<? extends GrantedAuthority> toAuthorities(final Collection<Role> roles) {
+	public static Collection<? extends GrantedAuthority> toAuthorities(final Collection<String> roles) {
 		final Set<GrantedAuthority> authorities = new HashSet<GrantedAuthority>(roles.size());
 
-		for (final Role role : roles) {
+		for (final String role : roles) {
 			authorities.add(toAuthority(role));
 		}
 
 		return authorities;
 	}
 
-	public static GrantedAuthority toAuthority(final Role role) {
-		return new SimpleGrantedAuthority(role.getRoleName());
+	public static GrantedAuthority toAuthority(final String role) {
+		return new SimpleGrantedAuthority(role);
 	}
 
-	public static Collection<Role> toRoles(final Collection<? extends GrantedAuthority> authorities) {
-		final Set<Role> roles = new HashSet<Role>(authorities.size());
+	public static Collection<String> toRoles(final Collection<? extends GrantedAuthority> authorities) {
+		final Set<String> roles = new HashSet<String>(authorities.size());
 
 		for (final GrantedAuthority authority : authorities) {
-			roles.add(Role.forAuthority(authority.getAuthority()));
+			roles.add(authority.getAuthority());
 		}
 
 		return roles;

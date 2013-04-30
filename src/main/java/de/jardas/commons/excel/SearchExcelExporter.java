@@ -1,25 +1,32 @@
 package de.jardas.commons.excel;
 
-import java.io.OutputStream;
+import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
+import java.util.Map;
+
+import org.springframework.web.servlet.ModelAndView;
 
 import de.jardas.commons.Preconditions;
+import de.jardas.commons.i18n.InternationalizationService;
 import de.jardas.commons.search.SearchQuery;
 import de.jardas.commons.search.SearchService;
 
 public class SearchExcelExporter {
-	private final ExcelExporter excelExporter;
+	private final InternationalizationService internationalizationService;
 
-	public SearchExcelExporter(final ExcelExporter excelExporter) {
-		this.excelExporter = Preconditions.notNull(excelExporter, "excelExporter");
+	public SearchExcelExporter(final InternationalizationService internationalizationService) {
+		this.internationalizationService = Preconditions.notNull(internationalizationService,
+				"internationalizationService");
 	}
 
-	public <E, Q extends SearchQuery<E>> void exportExcel(final SearchService<E, Q> searchService, final Q search,
-			final ExcelFormat<E> format, final Locale locale, final OutputStream out) {
+	public <E, Q extends SearchQuery<E>> ModelAndView exportExcel(final SearchService<E, Q> searchService,
+			final Q search, final ExcelFormat<E> format) {
 		search.setItemsPerPage(-1);
 		final List<E> items = searchService.search(search).getPageItems();
 
-		excelExporter.export(items, format, locale, out);
+		final ListExcelView<E> view = new ListExcelView<E>(format, internationalizationService);
+		final Map<String, ?> model = Collections.singletonMap(ListExcelView.ITEMS_MODEL_ATTRIBUTE, items);
+
+		return new ModelAndView(view, model);
 	}
 }

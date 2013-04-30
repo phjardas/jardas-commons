@@ -19,6 +19,8 @@ public class UserSpec {
 
 	private String password;
 
+	private boolean overridePassword;
+
 	@NotEmpty
 	private String[] roles;
 
@@ -77,5 +79,13 @@ public class UserSpec {
 		} else {
 			this.roles = new String[0];
 		}
+	}
+
+	public boolean isOverridePassword() {
+		return overridePassword;
+	}
+
+	public void setOverridePassword(final boolean overridePassword) {
+		this.overridePassword = overridePassword;
 	}
 }

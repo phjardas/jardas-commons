@@ -15,34 +15,45 @@ public class UsersInitializer implements Initializer {
 	private final List<UserSpec> users = new LinkedList<UserSpec>();
 	private final UserDetailsManager userDetailsManager;
 	private final PasswordGenerator passwordGenerator;
+	private final PasswordChanger passwordChanger;
 
 	public UsersInitializer(final UserDetailsManager userDetailsManager, final PasswordGenerator passwordGenerator) {
+		this(userDetailsManager, passwordGenerator, null);
+	}
+
+	public UsersInitializer(final UserDetailsManager userDetailsManager, final PasswordGenerator passwordGenerator,
+			final PasswordChanger passwordChanger) {
 		this.userDetailsManager = Preconditions.notNull(userDetailsManager, "userDetailsManager");
 		this.passwordGenerator = Preconditions.notNull(passwordGenerator, "passwordGenerator");
+		this.passwordChanger = passwordChanger;
 	}
 
 	@Override
 	public void initialize() {
 		for (final UserSpec user : users) {
 			if (!userDetailsManager.userExists(user.getEmail())) {
-				final String password = getPassword(user);
-				final SecurityUser u = new SecurityUser(null, user.getEmail(), user.getName(), password, true, true,
-						true, true, SecurityUtils.toAuthorities(user.getRoles()));
-				userDetailsManager.createUser(u);
+				createPassword(user);
+				userDetailsManager.createUser(createUser(user));
+			} else if (user.isOverridePassword() && passwordChanger != null) {
+				createPassword(user);
+				passwordChanger.renewPassword(user.getEmail(), user.getPassword());
 			}
 
 			userDetailsManager.loadUserByUsername(user.getEmail());
 		}
 	}
 
-	private String getPassword(final UserSpec user) {
+	private void createPassword(final UserSpec user) {
 		if (user.getPassword() == null) {
 			final String password = passwordGenerator.createRandomPassword();
-			LOG.info("Generated password for user {}: {}", user.getEmail(), password);
 			user.setPassword(password);
+			LOG.info("Password for user {}: {}", user.getEmail(), password);
 		}
+	}
 
-		return user.getPassword();
+	private SecurityUser createUser(final UserSpec user) {
+		return new SecurityUser(null, user.getEmail(), user.getName(), user.getPassword(), true, true, true, true,
+				SecurityUtils.toAuthorities(user.getRoles()));
 	}
 
 	@Override

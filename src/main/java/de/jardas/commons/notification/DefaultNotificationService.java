@@ -12,6 +12,8 @@ import com.google.common.collect.ImmutableMap.Builder;
 import com.google.common.collect.Maps;
 
 import de.jardas.commons.Preconditions;
+import de.jardas.commons.event.Events;
+import de.jardas.commons.event.NoopEvents;
 import de.jardas.commons.notification.template.NotificationRenderer;
 import de.jardas.commons.notification.template.RenderedMessage;
 import de.jardas.commons.notification.transport.MessageCustomizer;
@@ -21,18 +23,21 @@ public class DefaultNotificationService implements NotificationService {
 	private final NotificationRenderer notificationRenderer;
 	private final NotificationTransport notificationTransport;
 	private final Map<String, ?> defaultModel;
+	private final Events events;
 
 	@Deprecated
 	protected DefaultNotificationService() {
 		notificationRenderer = null;
 		notificationTransport = null;
 		defaultModel = null;
+		events = NoopEvents.defaultEvents(null);
 	}
 
 	public DefaultNotificationService(final NotificationRenderer notificationRenderer,
-			final NotificationTransport notificationTransport, final Map<String, ?> defaultModel) {
+			final NotificationTransport notificationTransport, final Events events, final Map<String, ?> defaultModel) {
 		this.notificationRenderer = Preconditions.notNull(notificationRenderer, "notificationRenderer");
 		this.notificationTransport = Preconditions.notNull(notificationTransport, "notificationTransport");
+		this.events = NoopEvents.defaultEvents(events);
 
 		final Builder<String, Object> defaultModelBuilder = ImmutableMap.<String, Object> builder();
 
@@ -52,7 +57,10 @@ public class DefaultNotificationService implements NotificationService {
 		final RenderedMessage message = notificationRenderer.renderMessage(templateName, theModel, locale);
 		notificationTransport.sendMessage(sender, recipient, message, customizer);
 
-		return createEmail(sender, recipient, message);
+		final Email email = createEmail(sender, recipient, message);
+		events.post(new NotificationEvent(email));
+
+		return email;
 	}
 
 	private Email createEmail(final InternetAddress sender, final InternetAddress recipient,
